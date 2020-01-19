@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+var querystring = require('querystring');
 var server = http.createServer(handler);
 var message = "I am so happy to be part of the Node Girls workshop!";
 
@@ -46,8 +47,27 @@ function handler(request, response) {
             response.end(file);
         });
         // TODO - write your generic endpoint code here
+    } else if (endpoint === '/create-post') {
+        var allTheData = '';
+        request.on('data', function(chunkOfData) {
+            allTheData += chunkOfData;
+        });
+
+        request.on('end', function() {
+            console.log(allTheData);
+            var convertedData = querystring.parse(allTheData);
+            console.log(convertedData);
+            response.writeHead(301, { "Location": "/" });
+            response.end();
+        });
+        // TODO - write your generic endpoint code here
     }
 }
+
+
+
+
+
 
 // function handler(request, response) {
 //     var method = request.method;
