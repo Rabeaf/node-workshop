@@ -5,6 +5,8 @@ const router = (request, response) => {
     const url = request.url;
     if (url === "/") {
         handlers.handleHomeRoute(request, response)
+    } else if (url === "/posts") {
+        handlers.handleLoadPosts(request, response)
     } else if (url === "/create/post") {
         handlers.handleCreatePost(request, response)
     } else {

@@ -43,23 +43,35 @@ const handlePublic = (request, response) => {
 
 }
 
-const handleCreatePost = (request, response) => {
-
+const handleLoadPosts = (request, response) => {
     const url = request.url;
     console.log(url);
-    if (url === '/create/post') {
-        var allTheData = '';
-        request.on('data', function(chunkOfData) {
-            allTheData += chunkOfData;
-        });
-        request.on('end', function() {
-            console.log(allTheData);
-            var convertedData = querystring.parse(allTheData);
-            console.log(convertedData);
-            response.writeHead(301, { "Location": "/" });
-            response.end();
-        });
-    }
+    var posts = require('./posts.json');
+    response.end(JSON.stringify(posts));
 }
 
-module.exports = { handleHomeRoute, handlePublic, handleCreatePost }
+const handleCreatePost = (request, response) => {
+    const url = request.url;
+    console.log(url);
+    var allTheData = '';
+    request.on('data', function(chunkOfData) {
+        allTheData += chunkOfData;
+    });
+    request.on('end', function() {
+        console.log(allTheData);
+        var convertedData = querystring.parse(allTheData);
+        console.log(convertedData);
+        var data = require('./posts.json');
+        data[Date.now()] = convertedData["post"];
+        fs.writeFile("./src/posts.json", JSON.stringify(data), function(err) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(data)
+        });
+        response.writeHead(301, { "Location": "/" });
+        response.end();
+    });
+}
+
+module.exports = { handleHomeRoute, handlePublic, handleLoadPosts, handleCreatePost }
